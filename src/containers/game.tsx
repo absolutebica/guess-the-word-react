@@ -27,6 +27,7 @@ const Game = ({userName}: {userName:string}) => {
         fetchRandomWord();
     }, []);
 
+
     const handleGuess = (letter:string) => {
         const regexp = new RegExp(letter, "g");
 		const selectedWordletterMatchesCount:number = (randomWord.match(regexp) || []).length;
@@ -43,15 +44,15 @@ const Game = ({userName}: {userName:string}) => {
 			} else {
 				setGuessLimit(guessLimit - 1);
 				setWrongGuesses([...wrongGuesses, letter]);
-
-                if (!guessLimit) {
-                    setMessage(FAIL_MESSAGE);
-                    setIsGameOver(true);
-                }
 			}
             console.log(!!selectedWordletterMatchesCount);
 			setHasWrongGuess(!selectedWordletterMatchesCount);
 		}
+
+        if (!guessLimit) {
+            setMessage(FAIL_MESSAGE);
+            setIsGameOver(true);
+        }
     }
 
     const findLetter = (letter:string, isUsed = true) => {
@@ -66,14 +67,13 @@ const Game = ({userName}: {userName:string}) => {
 
     const updateCorrectLetter = (letter:string) => {
         const findValidLetter = findLetter(letter, false)[0];
-        const previousSplitLetters = [...splitWordLetters];
-        for (const wordLetter in previousSplitLetters) {
-            if (previousSplitLetters[wordLetter].index === findValidLetter.index) {
-                previousSplitLetters[wordLetter].isUsed = true;
-            }
-        }
+        const updateLetters = splitWordLetters.map(wordLetter => 
+            (wordLetter.index === findValidLetter.index ? 
+                {...wordLetter, isUsed: true} :
+                wordLetter)
+        );
 
-        setSplitWordletters(previousSplitLetters);
+        setSplitWordletters(updateLetters);
         setHasWrongGuess(false);
     }
 
@@ -104,6 +104,7 @@ const Game = ({userName}: {userName:string}) => {
             setGuessLimit(word.length + 2); // add 2 to the length of the word for extra guesses
             getLetters(word)
             setIsLoading(false);
+            setHasWrongGuess(false);
         }
     }, [randomWord, splitWordLetters, isLoading]);
 
