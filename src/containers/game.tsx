@@ -16,12 +16,13 @@ const Game = ({userName}: {userName:string}) => {
     const [splitWordLetters, setSplitWordletters] = useState<SplitWordLetterProps[]>([]);
     const [wrongGuesses, setWrongGuesses] = useState<string[]>([]);
     const [guessLimit, setGuessLimit] = useState<number>(DEFAULT_LIMIT);
-    const [hasWrongGuess, setHasWrongGuess] = useState(false);
+    const [alreadyGuessed, setAlreadyGuessed] = useState(false);
     const [isGameOver, setIsGameOver] = useState(false);
 
     const DEFAULT_MESSAGE = `${userName}, welcome to Guess the Word`;
     const SUCCESS_MESSAGE = "I can't believe you won. Great job Einstein!";
     const FAIL_MESSAGE = `Sorry! No soup for you! The word was ${randomWord}`;
+    const NEW_GAME_MESSAGE = `${userName}, ready to go again?`;
     const [message, setMessage] = useState(DEFAULT_MESSAGE);
 
     useEffect(() => {
@@ -30,7 +31,7 @@ const Game = ({userName}: {userName:string}) => {
 
     useEffect(() => {
         checkIfWinnerOrLoser();
-    }, [guessLimit, splitWordLetters])
+    }, [guessLimit, splitWordLetters]);
 
     const handleGuess = (letter:string) => {
         const regexp = new RegExp(letter, "g");
@@ -39,7 +40,7 @@ const Game = ({userName}: {userName:string}) => {
 		const hasWrongMatch = !!wrongGuesses?.filter(guess => guess.toLowerCase() === letter.toLowerCase()).length;
 
 		if (hasWrongMatch || (selectedWordletterMatchesCount && correctLetterGuessCount >= selectedWordletterMatchesCount)) {
-			setHasWrongGuess(true);
+			setAlreadyGuessed(true);
 		} else {
 			if (selectedWordletterMatchesCount) {
 				updateCorrectLetter(letter);
@@ -47,7 +48,8 @@ const Game = ({userName}: {userName:string}) => {
                 setGuessLimit((state) => state - 1);
 				setWrongGuesses([...wrongGuesses, letter]);
 			}
-			setHasWrongGuess(!selectedWordletterMatchesCount);
+            
+			setAlreadyGuessed(false);
 		}
     }
 
@@ -70,7 +72,7 @@ const Game = ({userName}: {userName:string}) => {
         );
 
         setSplitWordletters(updateLetters);
-        setHasWrongGuess(false);
+        setAlreadyGuessed(false);
     }
 
     const checkIfWinnerOrLoser = () => {
@@ -89,6 +91,7 @@ const Game = ({userName}: {userName:string}) => {
 
     const onNewGame = () => {
         resetState();
+        setMessage(NEW_GAME_MESSAGE);
         fetchRandomWord();
     }
 
@@ -96,9 +99,10 @@ const Game = ({userName}: {userName:string}) => {
         setIsLoading(true);
         setIsGameOver(false);
         setWrongGuesses([]);
-        setHasWrongGuess(false);
+        setAlreadyGuessed(false);
         setGuessLimit(DEFAULT_LIMIT);
         setSplitWordletters([]);
+        
     }
 
     const fetchRandomWord = useCallback(async () => {
@@ -142,7 +146,7 @@ const Game = ({userName}: {userName:string}) => {
                     <RandomWord letters={splitWordLetters} />
                     <GuessLimit guessLimit={guessLimit} />
                     <WrongGuesses letters={wrongGuesses} />
-                    <AlreadyGuessed hasWrongGuess={hasWrongGuess} />
+                    {alreadyGuessed && <AlreadyGuessed />}
                     <Guess onGuess={handleGuess} />
                 </>
                 }

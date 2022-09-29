@@ -1,10 +1,10 @@
 import React from "react";
 
-const AlreadyGuessed = ({hasWrongGuess}: {hasWrongGuess:boolean}) => {
+const AlreadyGuessed = () => {
 
     return (
         <>
-        {!!hasWrongGuess && <div className="already-guessed">Letter already guessed</div>}
+        {<div className="already-guessed">Letter already guessed</div>}
         </>
     )
 }
