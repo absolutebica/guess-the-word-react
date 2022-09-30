@@ -144,7 +144,7 @@ const Game = ({userName}: {userName:string}) => {
                 {isGameOver ? <Button onClick={onHandleNewGame}>New Game</Button> : 
                 <>
                     <RandomWord letters={splitWordLetters} />
-                    <GuessLimit guessLimit={guessLimit} />
+                    <GuessLimit onRefresh={onHandleNewGame} guessLimit={guessLimit} />
                     <WrongGuesses letters={wrongGuesses} />
                     {alreadyGuessed && <AlreadyGuessed />}
                     <Guess onGuess={handleGuess} />
