@@ -25,6 +25,7 @@ const Game = ({userName}: {userName:string}) => {
     const NEW_GAME_MESSAGE = `${userName}, ready to go again?`;
     const [message, setMessage] = useState(DEFAULT_MESSAGE);
 
+    // Fetch Random word only once on load
     useEffect(() => {
         fetchRandomWord();
     }, []);
