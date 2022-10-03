@@ -1,5 +1,9 @@
 # guess-the-word-react
-Guess the Word App using ReactJS
+Guess the Word App using ReactJS 
+
+# DEMO 
+
+You can [check out a demo of this app here](https://codesandbox.io/p/github/absolutebica/guess-the-word-react/main)
 
 # Getting Started with Create React App
 
